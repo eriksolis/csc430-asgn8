@@ -1,3 +1,7 @@
+import Test.Hspec
+import Test.QuickCheck
+import Control.Exception(evaluate)
+
 data ExprC
   = NumC Float                 
   | IdC String                   
@@ -59,10 +63,21 @@ interp_app (CloV params body clo_env) args env = do
 interp_app (PrimV sym) args env = interp_primv sym (interp_args args env) env
 
 main :: IO()
-main = do
-  print (interp (NumC 2) top_env)
-  print (interp (StrC "abc") top_env)
-  print (interp (IdC "true") top_env)
-  print (interp (IfC (IdC "true") (NumC 3) (NumC 4)) top_env)
-  print (interp (LamC ["x", "y"] (NumC 3)) top_env)
-  print (interp (AppC (LamC ["x"] (IfC (IdC "x") (IdC "true") (IdC "false"))) [(IdC "true")]) top_env)
+-- main = do
+--   print (interp (NumC 2) top_env)
+--   print (interp (StrC "abc") top_env)
+--   print (interp (IdC "true") top_env)
+--   print (interp (IfC (IdC "true") (NumC 3) (NumC 4)) top_env)
+--   print (interp (LamC ["x", "y"] (NumC 3)) top_env)
+--   print (interp (AppC (LamC ["x"] (IfC (IdC "x") (IdC "true") (IdC "false"))) [(IdC "true")]) top_env)
+main = hspec $ do
+        describe "Interp TestCases" $ do
+                it "Interpret NumC" $ do
+                        (interp (NumC 2) top_env) `shouldBe` (NumV 2 :: Value)
+                
+                it "Interpret StrC" $ do 
+                        (interp (StrC "abc") top_env) `shouldBe` (StrV "abc" :: Value)
+                it "Interpret IdC" $ do
+                        (interp (IdC "true") top_env) `shouldBe` (BoolV True :: Value)
+                it "Interpret IfC" $ do
+                        (interp (IfC (IdC "true") (NumC 3) (NumC 4)) top_env) `shouldBe` (NumV 3 :: Value)

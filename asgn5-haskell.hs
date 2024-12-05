@@ -3,7 +3,7 @@ data ExprC
   | IdC String                   
   | StrC String                  
   | IfC ExprC ExprC ExprC       
-  | LamC [String] ExprC          
+  | LamC [ExprC] ExprC          
   | AppC ExprC [ExprC]           
   deriving (Show, Eq)
 
@@ -11,7 +11,7 @@ data Value
   = NumV Float
   | StrV String
   | BoolV Bool
-  | CloV [String] ExprC -- environment??
+  | CloV [ExprC] ExprC Env
   | PrimV String
   deriving (Show, Eq)
 
@@ -38,6 +38,7 @@ interp (IfC cond l r) env = if (interp cond env) == (BoolV True)
   then interp l env
   else interp r env
 interp (IdC id) env = from_env id env
+interp (LamC params body) env = CloV params body env
 
 main :: IO()
 main = do
@@ -45,3 +46,4 @@ main = do
   print (interp (StrC "abc") top_env)
   print (interp (IdC "true") top_env)
   print (interp (IfC (IdC "true") (NumC 3) (NumC 4)) top_env)
+  print (interp (LamC [(IdC "x"), (IdC "y")] (NumC 3)) top_env)

@@ -81,3 +81,7 @@ main = hspec $ do
                         (interp (IdC "true") top_env) `shouldBe` (BoolV True :: Value)
                 it "Interpret IfC" $ do
                         (interp (IfC (IdC "true") (NumC 3) (NumC 4)) top_env) `shouldBe` (NumV 3 :: Value)
+                it "Interpret LamC" $ do
+                        (interp (LamC ["x", "y"] (AppC (IdC "+") [(IdC "x"), (IdC "y")])) top_env)
+                          `shouldBe`
+                          (CloV ["x", "y"] (AppC (IdC "+") [(IdC "x"), (IdC "y")]) top_env :: Value)

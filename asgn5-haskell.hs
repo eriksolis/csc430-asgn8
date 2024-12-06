@@ -86,8 +86,3 @@ main = hspec $ do
                 it "Interpret AppC of LamC" $ do
                   (interp (AppC (LamC ["x"] (IfC (IdC "x") (IdC "true") (IdC "false")))
                     [(IdC "true")]) top_env) `shouldBe` (BoolV True)
-          
-main2 :: IO()
-main2 = do
-  let halfway = interp (NumC 2)
-  print (halfway top_env)
